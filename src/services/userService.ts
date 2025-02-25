@@ -1,18 +1,4 @@
-import axios from 'axios'
-
-const API_BASE_URL = 'http://localhost:8080/api'
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const setBasicAuth = (username: string, password: string) => {
-  const authHeader = "Basic " + btoa(`${username}:${password}`);
-  api.defaults.headers.common["Authorization"] = authHeader;
-};
+import api from './apiService.ts'
 
 
 export const userService = {
@@ -24,10 +10,8 @@ export const userService = {
 
 
 interface userData {
-  iduser: number
-  nickname: string
+  iduser: number | undefined
+  nickname: string | undefined
   password: string
-  role: string
+  role: string | undefined
 }
-
-export default api;

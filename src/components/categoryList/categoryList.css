@@ -1,0 +1,14 @@
+.table_name {
+    margin-top: 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add_button {
+    padding: 2px;
+    border-radius: 5px;
+    background: none;
+}

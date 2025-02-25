@@ -1,0 +1,40 @@
+.header {
+    height: 35px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px 5px;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.settings-button {
+    height: 35px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+
+    & > span {
+        font-size: 20px;
+    }
+}
+
+.logout-button {
+    height: 35px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+
+    & > span {
+        font-size: 20px;
+    }
+}

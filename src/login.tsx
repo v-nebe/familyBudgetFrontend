@@ -2,7 +2,6 @@ import React from 'react';
 import { authService } from "./services/authService.ts";
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { setBasicAuth } from './services/userService.ts';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,9 +14,11 @@ const Login: React.FC = () => {
   // Обработчик успешной отправки формы
   const onFinish = async (values: FieldType) => {
     await authService.login({nickname: values.username, password: values.password}).then((response) => {
-      setBasicAuth(values.username, values.password);
+      sessionStorage.setItem("username", values.username);
+      sessionStorage.setItem("password", values.password);
       message.success(response.data);
-      navigate('/userlist');
+
+      navigate('/categorylist');
     })
       .catch((error) => {
       //message.error('Invalid username or password');
