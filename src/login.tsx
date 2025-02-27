@@ -41,6 +41,7 @@ const Login: React.FC = () => {
       onFinishFailed={onFinishFailed}
       layout="vertical"
       autoComplete="off"
+      requiredMark={false}
     >
       <h2 style={{ textAlign: 'center' }}>Авторизация</h2>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { userService } from "../../services/userService.ts";
-import { Button, Form, FormProps, Input } from 'antd';
+import { Button, Form, FormProps, Input, message } from 'antd';
 import Header from '../header/header.tsx';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,16 +14,17 @@ const UserSettings: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadUser();
+    loadUser(sessionStorage.getItem("username"));
   }, []);
 
-  const loadUser = async () => {
+  const loadUser = async (nickname: string | null) => {
     try {
-      const response = await userService.getUserById(1);
+      const response = await userService.getUserByNickname(nickname);
       setUser(response.data);
       setOldPassword(response.data.password);
+
     } catch (err) {
-      setError("Не удалось загрузить пользователя");
+      setError('Не удалось загрузить пользователя');
     } finally {
       setLoading(false);
     }
@@ -33,11 +34,13 @@ const UserSettings: React.FC = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = async ({ username, password2 }) => {
     try {
-          await userService.updateUser({ 'iduser': user?.iduser, 'nickname' : username, 'password': password2, 'role': user?.role });
+          await userService.updateUser(sessionStorage.getItem("username"), { 'nickname': username, 'password': password2, 'role': user?.role });
+          message.success("Данные обновлены");
           sessionStorage.setItem("password", password2);
-          navigate('/categorylist')// Обновляем список категорий
+          sessionStorage.setItem("username", username);
+          navigate("/categorylist");
         } catch (error) {
-          setError("Ошибка при обновлении пользователя");
+          message.error("Ошибка при обновлении пользователя");
         }
       };
 
@@ -46,24 +49,12 @@ const UserSettings: React.FC = () => {
     console.log('Failed:', errorInfo);
   };
 
-  // const handleSave = async () => {
-  //   try {
-  //     await userService.updateUser(user);
-  //     message.success("Категория добавлена!");
-  //     loadCategories(); // Обновляем список категорий
-  //   } catch (error) {
-  //     message.error("Ошибка при добавлении категории!");
-  //   }
-  // };
-
 
   return (
     <>
       <Header />
-    <div>
-      <div className='table_name'>
-      <h2>Пользователь</h2>
-  </div>
+        <h2 style={{textAlign: 'center'}}>Пользователь</h2>
+      <div>
       {loading ? (
         <p>Загрузка...</p>
       ) : error ? (
@@ -71,13 +62,14 @@ const UserSettings: React.FC = () => {
       ) : (
         <Form
           name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
+          layout="vertical"
+          style={{ maxWidth: 400, margin: '0 auto', padding: '20px',
+            border: '1px solid #ddd', borderRadius: '8px' }}
+          requiredMark={false}
         >
           <Form.Item<FieldType>
             label="Username"
@@ -105,7 +97,7 @@ const UserSettings: React.FC = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item label="New password" name="password2" rules={[{ required: true, message: 'Поле не может быть пустым' }]}>
+          <Form.Item label="New password" name="password2" rules={[{ required: true, message: 'Поле не может быть пустым'}]}>
             <Input.Password />
           </Form.Item>
 
@@ -131,6 +123,7 @@ const UserSettings: React.FC = () => {
           </Form.Item>
 
           <Form.Item label={null}>
+            <Button onClick={() => navigate(-1)} color="danger" variant="outlined" style={{marginRight: '8px'}}>Отмена</Button>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>

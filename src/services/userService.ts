@@ -2,15 +2,16 @@ import api from './apiService.ts'
 
 
 export const userService = {
-  getAllUsers: () => api.get("/user/getAll"),
+  getUserByNickname: (nickname: string | null) =>
+    api.get(`user/nickname/${nickname}`),
   getUserById: (id: number) => api.get(`/user/get/${id}`),
-  updateUser: (userData:userData) => api.put(`/user/update`, userData),
+  updateUser: (nickname: string | null, userData: userData) =>
+    api.put(`/user/update/${nickname}`, userData),
   deleteUser: (id: number) => api.delete(`/user/delete/${id}`),
 };
 
 
 interface userData {
-  iduser: number | undefined
   nickname: string | undefined
   password: string
   role: string | undefined

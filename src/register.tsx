@@ -23,6 +23,7 @@ const Register: React.FC = () => {
       layout="vertical"
       style={{ maxWidth: 400, margin: '0 auto', padding: '20px',
         border: '1px solid #ddd', borderRadius: '8px' }}
+      requiredMark={false}
     >
       <h2 style={{ textAlign: 'center' }}>Регистрация</h2>
 
