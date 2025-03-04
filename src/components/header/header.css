@@ -38,3 +38,31 @@ nav {
         font-size: 20px;
     }
 }
+
+.admin-button {
+    height: 35px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+
+    & > span {
+        font-size: 20px;
+    }
+}
+
+.home-button {
+    margin-right: auto;
+    height: 35px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+
+    & > span {
+        font-size: 20px;
+    }}

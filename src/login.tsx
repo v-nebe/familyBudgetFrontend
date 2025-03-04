@@ -2,6 +2,7 @@ import React from 'react';
 import { authService } from "./services/authService.ts";
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { userService } from './services/userService.ts';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -13,11 +14,13 @@ const Login: React.FC = () => {
 
   // Обработчик успешной отправки формы
   const onFinish = async (values: FieldType) => {
-    await authService.login({nickname: values.username, password: values.password}).then((response) => {
+    await authService.login({nickname: values.username, password: values.password}).then(async (response) => {
       sessionStorage.setItem("username", values.username);
       sessionStorage.setItem("password", values.password);
       message.success(response.data);
-
+      await userService.getUserByNickname(values.username).then((response) => {
+        sessionStorage.setItem("role", response.data.role);
+      });
       navigate('/categorylist');
     })
       .catch((error) => {
