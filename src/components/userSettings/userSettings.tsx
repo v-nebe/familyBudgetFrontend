@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const UserSettings: React.FC = () => {
-  const [user, setUser] = useState<userData | null>(null);
+  const [user, setUser] = useState<userData>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [oldPassword, setOldPassword] = useState<string | null>(null);
@@ -14,12 +14,12 @@ const UserSettings: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadUser(sessionStorage.getItem("username"));
+    loadUser(sessionStorage.getItem("username") as string);
   }, []);
 
-  const loadUser = async (nickname: string | null) => {
+  const loadUser = async (nickname: string) => {
     try {
-      const response = await userService.getUserByNickname(nickname);
+      const response = await userService.getUser(undefined, nickname);
       setUser(response.data);
       setOldPassword(response.data.password);
 

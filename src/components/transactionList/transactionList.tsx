@@ -15,6 +15,7 @@ const TransactionList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("category");
+  const categoryType = searchParams.get("type");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<userData | null>(null);
   const [category, setCategory] = useState<categoryData | null>(null);
@@ -27,7 +28,7 @@ const TransactionList: React.FC = () => {
 
   useEffect(() => {
     loadTransactions();
-  }, [categoryId]);
+  }, [categoryId, categoryType]);
 
   useEffect(() => {
     loadUser();
@@ -43,12 +44,13 @@ const TransactionList: React.FC = () => {
     }
   }, [user, category, form]);
 
+
   const loadTransactions = async () => {
     try {
       const response = await transactionService.getAllTransactions();
       let data = response.data;
       data = data.filter((t: {user: { nickname: string }}) => t.user.nickname === sessionStorage.getItem('username'));
-      console.log(data);
+
       if (categoryId) {
         data = data.filter(
           (t: { category: { idcategory: number } }) =>
@@ -69,7 +71,7 @@ const TransactionList: React.FC = () => {
       const username = sessionStorage.getItem("username");
       if (!username) return;
 
-      const response = await userService.getUserByNickname(username);
+      const response = await userService.getUser(undefined, username);
       setUser(response.data);
     } catch (error) {
       message.error("Ошибка при загрузке пользователя");
@@ -95,7 +97,7 @@ const TransactionList: React.FC = () => {
     setIsEditModalOpen(true);
 
     try {
-      const response = await userService.getUserById(record.user.iduser);
+      const response = await userService.getUser(record.user.iduser);
       setEditUser(response.data);
     } catch (error) {
       message.error("Ошибка при загрузке данных пользователя");
@@ -110,12 +112,12 @@ const TransactionList: React.FC = () => {
         user: { iduser: editUser?.iduser },
         category: { idcategory: category?.idcategory },
         currency: values.currency,
-        amount: values.amount,
+        amount: Math.abs(values.amount).toString(),
         date: values.date.format("YYYY-MM-DD"),
       };
 
       await transactionService.updateTransaction(transactionData);
-      message.success("Транзакция добавлена!");
+      message.success("Транзакция обновлена!");
       setIsEditModalOpen(false);
       form.resetFields();
       loadTransactions();
@@ -158,13 +160,24 @@ const TransactionList: React.FC = () => {
 
   const handleAddTransaction = async (values: any) => {
     try {
-      const transactionData = {
-        user: { iduser: user?.iduser },
-        category: { idcategory: category?.idcategory },
-        currency: values.currency,
-        amount: values.amount,
-        date: values.date.format("YYYY-MM-DD"),
-      };
+      let transactionData;
+      if (categoryType === "Расход") {
+        transactionData = {
+          user: { iduser: user?.iduser },
+          category: { idcategory: category?.idcategory },
+          currency: values.currency,
+          amount: values.amount,
+          date: values.date.format("YYYY-MM-DD"),
+        }
+      } else {
+        transactionData = {
+          user: { iduser: user?.iduser },
+          category: { idcategory: category?.idcategory },
+          currency: values.currency,
+          amount: values.amount,
+          date: values.date.format("YYYY-MM-DD"),
+        };
+      }
 
       await transactionService.addTransaction(transactionData);
       message.success("Транзакция добавлена!");
@@ -226,6 +239,7 @@ const TransactionList: React.FC = () => {
             <Select>
               <Option value="BYN">BYN</Option>
               <Option value="USD">USD</Option>
+              <Option value="EUR">EUR</Option>
             </Select>
           </Form.Item>
 
@@ -287,6 +301,7 @@ const TransactionList: React.FC = () => {
             <Select>
               <Option value="BYN">BYN</Option>
               <Option value="USD">USD</Option>
+              <Option value="EUR">EUR</Option>
             </Select>
           </Form.Item>
 

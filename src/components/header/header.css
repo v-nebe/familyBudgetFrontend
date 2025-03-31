@@ -66,3 +66,12 @@ nav {
     & > span {
         font-size: 20px;
     }}
+
+.currency-info {
+    height: 35px;
+    align-items: center;
+    width: 150px;
+    font-size: 20px;
+    padding: 3px;
+
+}

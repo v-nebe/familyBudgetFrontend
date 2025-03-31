@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Table, message, Button, Modal, Input } from 'antd';
+import { Table, message, Button, Modal, Input, Select } from 'antd';
 import { categoryService } from "../../../../services/categoryService.ts";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+
+const { Option } = Select;
 
 const CategoryTab: React.FC = () => {
   const [categories, setCategories] = useState<categoryData[]>([]);
@@ -15,6 +17,8 @@ const CategoryTab: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [editedCategory, setEditedCategory] = useState<categoryData | null>(null);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
+  const [categoryType, setCategoryType] = useState<string>("")
+  const [categoryNewType, setCategoryNewType] = useState<string>("")
 
   useEffect(() => {
     loadCategories();
@@ -31,18 +35,33 @@ const CategoryTab: React.FC = () => {
     }
   };
 
+  const handleChange = (value: string) => {
+    setCategoryType(value); // { value: "lucy", key: "lucy", label: "Lucy (101)" }
+  };
+
+  const handleChangeForEdit = (value: string) => {
+    setCategoryNewType(value); // { value: "lucy", key: "lucy", label: "Lucy (101)" }
+  };
+
+  // Функция добавления категории
   const handleAddCategory = async () => {
     if (!categoryName.trim()) {
       message.error("Название категории не может быть пустым!");
       return;
     }
 
+    if (!categoryType) {
+      message.error("Тип категории не может быть пустым!");
+      return;
+    }
+
     try {
-      await categoryService.addCategory({ categoryname: categoryName });
+      await categoryService.addCategory({ categoryname: categoryName, type: categoryType });
       message.success("Категория добавлена!");
       setCategoryName("");
+      setCategoryType("");
       setIsAddModalOpen(false);
-      loadCategories();
+      await loadCategories();
     } catch (error) {
       message.error("Ошибка при добавлении категории!");
     }
@@ -52,7 +71,7 @@ const CategoryTab: React.FC = () => {
     try {
       await categoryService.deleteCategory(id);
       message.success("Категория успешно удалена!");
-      loadCategories();
+      await loadCategories();
     } catch (error) {
       message.error("Ошибка при удалении категории!");
     }
@@ -62,9 +81,11 @@ const CategoryTab: React.FC = () => {
   const showEditModal = (record: categoryData) => {
     setEditedCategory(record);
     setNewCategoryName(record.categoryname);
+    setCategoryNewType(record.type);
     setIsEditModalOpen(true);
   };
 
+  // Сохранение отредактированной категории
   const handleEditCategory = async () => {
     if (!editedCategory) return;
 
@@ -73,15 +94,21 @@ const CategoryTab: React.FC = () => {
       return;
     }
 
+    if (!categoryNewType) {
+      message.error("Тип категории не может быть пустым!");
+      return;
+    }
+
     try {
       await categoryService.updateCategory({
         idcategory: editedCategory.idcategory,
-        categoryname: newCategoryName
+        categoryname: newCategoryName,
+        type: categoryNewType,
       });
 
       message.success("Категория обновлена!");
       setIsEditModalOpen(false);
-      loadCategories();
+      await loadCategories();
     } catch (error) {
       message.error("Ошибка при обновлении категории!");
     }
@@ -91,6 +118,7 @@ const CategoryTab: React.FC = () => {
   const columns = [
     { title: 'ID', dataIndex: 'idcategory', key: 'idcategory' },
     { title: 'Название', dataIndex: 'categoryname', key: 'categoryname' },
+    { title: 'Тип', dataIndex: 'type', key: 'type'},
     {
       title: 'Действия',
       key: 'action',
@@ -140,7 +168,12 @@ const CategoryTab: React.FC = () => {
           value={categoryName}
           onChange={(e) => setCategoryName(e.target.value)}
         />
+        <Select style={{width:'100%', marginTop: '10px'}} onChange={handleChange} placeholder="Выберите тип категории">
+          <Option value="Доход">Доход</Option>
+          <Option value="Расход">Расход</Option>
+        </Select>
       </Modal>
+
       <Modal
         title="Редактирование категории"
         open={isEditModalOpen}
@@ -158,6 +191,10 @@ const CategoryTab: React.FC = () => {
           value={newCategoryName}
           onChange={(e) => setNewCategoryName(e.target.value)}
         />
+        <Select value={categoryNewType} style={{width:'100%', marginTop: '10px'}} onChange={handleChangeForEdit}>
+          <Option value="Доход">Доход</Option>
+          <Option value="Расход">Расход</Option>
+        </Select>
       </Modal>
     </>
   );
@@ -166,6 +203,7 @@ const CategoryTab: React.FC = () => {
 interface categoryData {
   idcategory: number;
   categoryname: string;
+  type: string;
 }
 
 export default CategoryTab;

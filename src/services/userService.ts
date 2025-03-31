@@ -3,9 +3,13 @@ import api from './apiService.ts'
 
 export const userService = {
   getAllUsers: () => api.get('/user/getAll'),
-  getUserByNickname: (nickname: string | null) =>
-    api.get(`user/nickname/${nickname}`),
-  getUserById: (id: number) => api.get(`/user/get/${id}`),
+  getUser: (id?: number, nickname?: string ) =>  {
+    const params = new URLSearchParams();
+    if (id) params.append("id", id.toString());
+    if (nickname) params.append("nickname", nickname);
+
+    return api.get(`/user/get/user?${params.toString()}`);
+  },
   updateUser: (nickname: string | null, userData: userData) =>
     api.put(`/user/update/${nickname}`, userData),
   deleteUser: (id: number) => api.delete(`/user/delete/${id}`),

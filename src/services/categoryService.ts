@@ -10,10 +10,12 @@ export const categoryService = {
 
 interface categoryDataForUpdate {
   idcategory: number,
-  categoryname: string
+  categoryname: string,
+  type: string,
 }
 
 
 interface categoryData {
-  categoryname: string
+  categoryname: string,
+  type: string,
 }
