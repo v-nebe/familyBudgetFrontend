@@ -193,6 +193,8 @@ interface userData {
 interface categoryData {
   idcategory: number;
   categoryname: string;
+  type: string;
 }
+
 
 export default TransactionTab;

@@ -18,7 +18,7 @@ const Login: React.FC = () => {
       sessionStorage.setItem("username", values.username);
       sessionStorage.setItem("password", values.password);
       message.success(response.data);
-      await userService.getUserByNickname(values.username).then((response) => {
+      await userService.getUser(undefined, values.username).then((response) => {
         sessionStorage.setItem("role", response.data.role);
       });
       navigate('/categorylist');
