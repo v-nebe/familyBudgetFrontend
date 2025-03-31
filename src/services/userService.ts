@@ -2,6 +2,7 @@ import api from './apiService.ts'
 
 
 export const userService = {
+  getAllUsers: () => api.get('/user/getAll'),
   getUserByNickname: (nickname: string | null) =>
     api.get(`user/nickname/${nickname}`),
   getUserById: (id: number) => api.get(`/user/get/${id}`),
@@ -13,6 +14,6 @@ export const userService = {
 
 interface userData {
   nickname: string | undefined
-  password: string
+  password: string | null
   role: string | undefined
 }

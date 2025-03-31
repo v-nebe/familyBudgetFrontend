@@ -4,6 +4,7 @@ import { Button, Input, message, Modal, Table } from "antd";
 import Header from "../header/header.tsx";
 import "./categoryList.css";
 import { DeleteOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { useNavigate } from 'react-router-dom';
 
 const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState<categoryData[]>([]);
@@ -18,6 +19,8 @@ const CategoryList: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [editedCategory, setEditedCategory] = useState<categoryData | null>(null);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadCategories();
@@ -95,11 +98,6 @@ const CategoryList: React.FC = () => {
 
   const columns = [
     {
-      key: "idcategory",
-      title: "ID",
-      dataIndex: "idcategory",
-    },
-    {
       key: "categoryname",
       title: "Название категории",
       dataIndex: "categoryname",
@@ -132,9 +130,15 @@ const CategoryList: React.FC = () => {
       <div>
         <div className="table_name">
           <h2>Категории трат</h2>
-          <Button className="add_button" onClick={() => setIsAddModalOpen(true)} icon={<PlusOutlined />} style={{padding: '5px'}}>
-            Добавить категорию
-          </Button>
+          <div>
+            <Button className="add_button" onClick={() => setIsAddModalOpen(true)} icon={<PlusOutlined />} style={{padding: '5px', marginRight: '10px'}}>
+              Добавить категорию
+            </Button>
+            <Button className="add_button" onClick={() => navigate('/result')} style={{padding: '5px'}}>
+              Таблица трат
+            </Button>
+          </div>
+
         </div>
 
         {/* Таблица с категориями */}
@@ -143,7 +147,11 @@ const CategoryList: React.FC = () => {
         ) : error ? (
           <p style={{ color: "red" }}>{error}</p>
         ) : (
-          <Table dataSource={dataSource} columns={columns} />
+          <Table dataSource={dataSource} columns={columns}
+                 onRow={(record) => ({ onClick: () =>
+                     navigate(`/transactions?category=${record.idcategory}`),
+          })}
+                 style={{ cursor: "pointer" }}/>
         )}
 
         <Modal
