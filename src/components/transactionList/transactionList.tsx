@@ -6,7 +6,7 @@ import { categoryService } from '../../services/categoryService.ts';
 import { Button, DatePicker, Form, Input, message, Modal, Select, Table } from 'antd';
 import Header from '../header/header.tsx';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -222,7 +222,12 @@ const TransactionList: React.FC = () => {
           Добавить транзакцию
         </Button>
       </div>
-      <Table columns={columns} dataSource={transactions} loading={loading} rowKey="idtransaction" />
+      <Table
+        columns={columns}
+        dataSource={transactions}
+        loading={loading}
+        rowKey="idtransaction"
+      />
 
       <Modal
         title="Добавить транзакцию"
@@ -230,12 +235,25 @@ const TransactionList: React.FC = () => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <Form form={form} layout="vertical" onFinish={handleAddTransaction} requiredMark={false}>
-          <Form.Item label="Сумма" name="amount" rules={[{ required: true, message: "Введите сумму" }]}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleAddTransaction}
+          requiredMark={false}
+        >
+          <Form.Item
+            label="Сумма"
+            name="amount"
+            rules={[{ required: true, message: 'Введите сумму' }]}
+          >
             <Input type="number" />
           </Form.Item>
 
-          <Form.Item label="Валюта" name="currency" rules={[{ required: true, message: "Выберите валюту" }]}>
+          <Form.Item
+            label="Валюта"
+            name="currency"
+            rules={[{ required: true, message: 'Выберите валюту' }]}
+          >
             <Select>
               <Option value="BYN">BYN</Option>
               <Option value="USD">USD</Option>
@@ -245,25 +263,45 @@ const TransactionList: React.FC = () => {
 
           <Form.Item label="Пользователь" name="iduser">
             <Select disabled>
-              {user && <Option key={user.iduser} value={user.iduser}>{user.nickname}</Option>}
+              {user && (
+                <Option key={user.iduser} value={user.iduser}>
+                  {user.nickname}
+                </Option>
+              )}
             </Select>
           </Form.Item>
 
           <Form.Item label="Категория" name="idcategory">
             <Select disabled>
-              {category && <Option key={category.idcategory} value={category.idcategory}>{category.categoryname}</Option>}
+              {category && (
+                <Option key={category.idcategory} value={category.idcategory}>
+                  {category.categoryname}
+                </Option>
+              )}
             </Select>
           </Form.Item>
 
-          <Form.Item label="Дата" name="date" rules={[{ required: true, message: "Выберите дату" }]}>
-            <DatePicker style={{ width: "100%" }} />
+          <Form.Item
+            label="Дата"
+            name="date"
+            rules={[{ required: true, message: 'Выберите дату' }]}
+          >
+            <DatePicker
+              picker="date"
+              defaultValue={dayjs(new Date())}
+              allowClear={false}
+              style={{ width: '100%' }}
+            />
           </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Сохранить
             </Button>
-            <Button style={{ marginLeft: "10px" }} onClick={() => setIsModalOpen(false)}>
+            <Button
+              style={{ marginLeft: '10px' }}
+              onClick={() => setIsModalOpen(false)}
+            >
               Отмена
             </Button>
           </Form.Item>
@@ -275,7 +313,7 @@ const TransactionList: React.FC = () => {
         open={isEditModalOpen}
         onCancel={() => setIsEditModalOpen(false)}
         footer={null}
-        afterOpenChange={(open) => {
+        afterOpenChange={(open: any) => {
           if (open && selectedTransaction) {
             form.setFieldsValue({
               idtransaction: selectedTransaction.idtransaction,
@@ -283,21 +321,40 @@ const TransactionList: React.FC = () => {
               currency: selectedTransaction.currency,
               iduser: selectedTransaction.user.iduser,
               idcategory: selectedTransaction.category.idcategory,
-              date: selectedTransaction.date ? moment(selectedTransaction.date) : null,
+              date: selectedTransaction.date
+                ? dayjs(selectedTransaction.date)
+                : null,
             });
           }
         }}
       >
-        <Form form={form} layout="vertical" onFinish={handleEditTransaction} requiredMark={false}>
-          <Form.Item label="id" name="idtransaction" rules={[{ required: true }]} >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleEditTransaction}
+          requiredMark={false}
+        >
+          <Form.Item
+            label="id"
+            name="idtransaction"
+            rules={[{ required: true }]}
+          >
             <Input disabled={true} />
           </Form.Item>
 
-          <Form.Item label="Сумма" name="amount" rules={[{ required: true, message: "Введите сумму" }]}>
+          <Form.Item
+            label="Сумма"
+            name="amount"
+            rules={[{ required: true, message: 'Введите сумму' }]}
+          >
             <Input type="number" />
           </Form.Item>
 
-          <Form.Item label="Валюта" name="currency" rules={[{ required: true, message: "Выберите валюту" }]}>
+          <Form.Item
+            label="Валюта"
+            name="currency"
+            rules={[{ required: true, message: 'Выберите валюту' }]}
+          >
             <Select>
               <Option value="BYN">BYN</Option>
               <Option value="USD">USD</Option>
@@ -307,25 +364,44 @@ const TransactionList: React.FC = () => {
 
           <Form.Item label="Пользователь" name="iduser">
             <Select disabled>
-              {editUser && <Option key={editUser.iduser} value={editUser.iduser}>{editUser.nickname}</Option>}
+              {editUser && (
+                <Option key={editUser.iduser} value={editUser.iduser}>
+                  {editUser.nickname}
+                </Option>
+              )}
             </Select>
           </Form.Item>
 
           <Form.Item label="Категория" name="idcategory">
             <Select disabled>
-              {category && <Option key={category.idcategory} value={category.idcategory}>{category.categoryname}</Option>}
+              {category && (
+                <Option key={category.idcategory} value={category.idcategory}>
+                  {category.categoryname}
+                </Option>
+              )}
             </Select>
           </Form.Item>
 
-          <Form.Item label="Дата" name="date" rules={[{ required: true, message: "Выберите дату" }]}>
-            <DatePicker style={{ width: "100%" }} />
+          <Form.Item
+            label="Дата"
+            name="date"
+            rules={[{ required: true, message: 'Выберите дату' }]}
+          >
+            <DatePicker
+              picker="date"
+              allowClear={false}
+              style={{ width: '100%' }}
+            />
           </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Сохранить
             </Button>
-            <Button style={{ marginLeft: "10px" }} onClick={() => setIsEditModalOpen(false)}>
+            <Button
+              style={{ marginLeft: '10px' }}
+              onClick={() => setIsEditModalOpen(false)}
+            >
               Отмена
             </Button>
           </Form.Item>

@@ -55,24 +55,33 @@ const CategoryList: React.FC = () => {
         <div className="table_name">
           <h2>Категории трат</h2>
           <div>
-            <Button className="add_button" onClick={() => navigate('/result')} style={{padding: '5px'}}>
+            <Button
+              className="add_button"
+              onClick={() => navigate('/result')}
+              style={{ padding: '5px' }}
+            >
               Таблица трат
             </Button>
           </div>
-
         </div>
 
         {/* Таблица с категориями */}
         {loading ? (
           <p>Загрузка...</p>
         ) : error ? (
-          <p style={{ color: "red" }}>{error}</p>
+          <p style={{ color: 'red' }}>{error}</p>
         ) : (
-          <Table dataSource={dataSource} columns={columns}
-                 onRow={(record) => ({ onClick: () =>
-                     navigate(`/transactions?category=${record.idcategory}&type=${record.type}`),
-          })}
-                 style={{ cursor: "pointer" }}/>
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            onRow={(record: { idcategory: any; type: any }) => ({
+              onClick: () =>
+                navigate(
+                  `/transactions?category=${record.idcategory}&type=${record.type}`,
+                ),
+            })}
+            style={{ cursor: 'pointer' }}
+          />
         )}
       </div>
     </>

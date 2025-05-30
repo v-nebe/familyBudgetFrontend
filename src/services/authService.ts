@@ -1,7 +1,7 @@
 import api from './apiService.ts'
 
 export const authService = {
-  login: (authData: authData) => api.post('/auth/login', authData),
+  login: (authData: authData) => api.post('/user/login', authData),
   register: async (nickname: string, password: string) => {
     return api.post('/user/create', { nickname, password });
   },

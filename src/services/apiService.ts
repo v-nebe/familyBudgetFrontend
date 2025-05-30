@@ -13,7 +13,7 @@ api.interceptors.request.use(config => {
 
   const requestUrl = config.url || '';
 
-  if ((requestUrl.includes('/auth')) || (requestUrl.includes('/user/create')) || (requestUrl.includes('/currency'))) {
+  if ((requestUrl.includes('/user/login')) || (requestUrl.includes('/user/create')) || (requestUrl.includes('/currency'))) {
     return config; // Не добавляем заголовок
   }
   // Добавляем Basic Auth для всех остальных запросов
